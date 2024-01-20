@@ -1,7 +1,7 @@
 package com.tfunsal.eventhub.models;
 
 import com.tfunsal.eventhub.dtos.ClubDto;
-import com.tfunsal.eventhub.dtos.EventDto;
+import com.tfunsal.eventhub.dtos.ClubEventInfoDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,8 +30,7 @@ public class Club {
     private LocalDateTime createdDate;
     @UpdateTimestamp
     private LocalDateTime updatedDate;
-    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
-    @JoinColumn(name = "event_id")
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "club")
     private List<Event> events = new ArrayList<>();
 
 
@@ -45,20 +44,18 @@ public class Club {
         clubDto.setCreatedDate(createdDate);
         clubDto.setUpdatedDate(updatedDate);
 
-        List<EventDto> eventDtos = new ArrayList<>();
+        List<ClubEventInfoDto> clubEventInfoDtos = new ArrayList<>();
         for (Event event : events) {
-            EventDto eventDto = new EventDto();
-            eventDto.setId(event.getId());
-            eventDto.setName(event.getName());
-            eventDto.setLocation(event.getLocation());
-            eventDto.setStartTime(event.getStartTime());
-            eventDto.setEndTime(event.getEndTime());
-            eventDto.setEventCategory(event.getEventCategory());
-            eventDto.setEventType(event.getEventType());
-            eventDto.setClubId(event.getClub().getId());
-            eventDtos.add(eventDto);
+            ClubEventInfoDto clubEventInfoDto = new ClubEventInfoDto();
+            clubEventInfoDto.setName(event.getName());
+            clubEventInfoDto.setLocation(event.getLocation());
+            clubEventInfoDto.setStartTime(event.getStartTime());
+            clubEventInfoDto.setEndTime(event.getEndTime());
+            clubEventInfoDto.setEventCategory(event.getEventCategory());
+            clubEventInfoDto.setEventType(event.getEventType());
+            clubEventInfoDtos.add(clubEventInfoDto);
         }
-        clubDto.setEvents(eventDtos);
+        clubDto.setEvents(clubEventInfoDtos);
         return clubDto;
     }
 }

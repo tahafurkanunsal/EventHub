@@ -1,6 +1,8 @@
 package com.tfunsal.eventhub.services;
 
+import com.tfunsal.eventhub.dtos.ClubCreateDto;
 import com.tfunsal.eventhub.dtos.ClubDto;
+import com.tfunsal.eventhub.dtos.ClubUpdateDto;
 
 import java.util.List;
 
@@ -12,11 +14,9 @@ public interface ClubService {
 
     ClubDto getClubByName(String name);
 
-    ClubDto getClubEvents(Long id);
+    ClubDto createClub(ClubCreateDto clubCreateDto);
 
-    ClubDto createClub(ClubDto clubDto);
-
-    ClubDto updateClub(Long clubId, ClubDto clubDto);
+    ClubDto updateClub(Long clubId, ClubUpdateDto clubUpdateDto);
 
     boolean deleteClub(Long id);
 }

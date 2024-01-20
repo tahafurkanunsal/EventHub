@@ -1,8 +1,10 @@
 package com.tfunsal.eventhub.services.impl;
 
 import com.tfunsal.eventhub.dtos.EventDto;
+import com.tfunsal.eventhub.dtos.EventUpdateDto;
 import com.tfunsal.eventhub.enums.EventCategory;
 import com.tfunsal.eventhub.enums.EventType;
+import com.tfunsal.eventhub.exception.ClubNotFoundException;
 import com.tfunsal.eventhub.models.Club;
 import com.tfunsal.eventhub.models.Event;
 import com.tfunsal.eventhub.repository.ClubRepository;
@@ -69,6 +71,7 @@ public class EventServiceImpl implements EventService {
     public EventDto createEvent(EventDto eventDto) {
         Event event = new Event();
 
+        event.setId(eventDto.getId());
         event.setName(eventDto.getName());
         event.setLocation(eventDto.getLocation());
         event.setStartTime(eventDto.getStartTime());
@@ -76,30 +79,44 @@ public class EventServiceImpl implements EventService {
         event.setEventCategory(eventDto.getEventCategory());
         event.setEventType(eventDto.getEventType());
 
-        Optional<Club> club = clubRepository.findById(eventDto.getClubId());
-        if (club.isPresent()) {
-            event.setClub(club.get());
+        Optional<Club> clubOptional = clubRepository.findById(eventDto.getClubId());
+
+        if (clubOptional.isPresent()) {
+            Club club = clubOptional.get();
+            event.setClub(club);
+
+            Event savedEvent = eventRepository.save(event);
+
+            EventDto newEventDto = new EventDto();
+            newEventDto.setId(savedEvent.getId());
+            newEventDto.setName(savedEvent.getName());
+            newEventDto.setLocation(savedEvent.getLocation());
+            newEventDto.setStartTime(savedEvent.getStartTime());
+            newEventDto.setEndTime(savedEvent.getEndTime());
+            newEventDto.setEventCategory(savedEvent.getEventCategory());
+            newEventDto.setEventType(savedEvent.getEventType());
+            newEventDto.setClubId(savedEvent.getClub().getId());
+            newEventDto.setClubName(savedEvent.getClub().getName());
+
+            return newEventDto;
+        } else {
+            throw new ClubNotFoundException("Club with ID " + eventDto.getClubId() + " not found");
         }
-        return eventRepository.save(event).getDto();
     }
 
     @Override
-    public EventDto updateEvent(Long eventId, EventDto eventDto) {
+    public EventDto updateEvent(Long eventId, EventUpdateDto eventUpdateDto) {
 
         Event existingEvent = eventRepository.findById(eventId).get();
 
         existingEvent.setId(eventId);
-        existingEvent.setName(eventDto.getName());
-        existingEvent.setLocation(eventDto.getLocation());
-        existingEvent.setEventCategory(eventDto.getEventCategory());
-        existingEvent.setEventType(eventDto.getEventType());
-        existingEvent.setStartTime(eventDto.getStartTime());
-        existingEvent.setEndTime(eventDto.getEndTime());
+        existingEvent.setName(eventUpdateDto.getName());
+        existingEvent.setLocation(eventUpdateDto.getLocation());
+        existingEvent.setEventCategory(eventUpdateDto.getEventCategory());
+        existingEvent.setEventType(eventUpdateDto.getEventType());
+        existingEvent.setStartTime(eventUpdateDto.getStartTime());
+        existingEvent.setEndTime(eventUpdateDto.getEndTime());
 
-        Optional<Club> club = clubRepository.findById(eventDto.getClubId());
-        if (club.isPresent()) {
-            existingEvent.setClub(club.get());
-        }
         return eventRepository.save(existingEvent).getDto();
     }
 

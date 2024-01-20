@@ -1,6 +1,8 @@
 package com.tfunsal.eventhub.services.impl;
 
+import com.tfunsal.eventhub.dtos.ClubCreateDto;
 import com.tfunsal.eventhub.dtos.ClubDto;
+import com.tfunsal.eventhub.dtos.ClubUpdateDto;
 import com.tfunsal.eventhub.models.Club;
 import com.tfunsal.eventhub.models.Event;
 import com.tfunsal.eventhub.repository.ClubRepository;
@@ -9,6 +11,7 @@ import com.tfunsal.eventhub.services.ClubService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -27,6 +30,7 @@ public class ClubServiceImpl implements ClubService {
         return clubs.stream().map(Club::getDto).collect(Collectors.toList());
     }
 
+
     @Override
     public ClubDto getClubById(Long id) {
         Club club = clubRepository.findById(id).orElseThrow();
@@ -40,55 +44,30 @@ public class ClubServiceImpl implements ClubService {
         return club.getDto();
     }
 
-    @Override
-    public ClubDto getClubEvents(Long id) {
-
-        Optional<Club> club = clubRepository.findById(id);
-
-        if (club.isPresent()) {
-            List<Event> events = (List<Event>) eventRepository.findEventByClubId(id);
-            club.get().setEvents(events);
-        }
-        return club.get().getDto();
-    }
 
     @Override
-    public ClubDto createClub(ClubDto clubDto) {
+    public ClubDto createClub(ClubCreateDto clubCreateDto) {
         Club club = new Club();
-        club.setId(clubDto.getId());
-        club.setName(clubDto.getName());
-        club.setDescription(clubDto.getDescription());
-        club.setCreatedDate(clubDto.getCreatedDate());
-        club.setUpdatedDate(clubDto.getUpdatedDate());
-        club.setPhotoUrl(clubDto.getPhotoUrl());
+        club.setId(clubCreateDto.getId());
+        club.setName(clubCreateDto.getName());
+        club.setDescription(clubCreateDto.getDescription());
+        club.setCreatedDate(LocalDateTime.now());
+        club.setUpdatedDate(LocalDateTime.now());
+        club.setPhotoUrl(clubCreateDto.getPhotoUrl());
 
-        if (clubDto.getEvents() != null) {
-            List<Event> events = (List<Event>) eventRepository.findEventByClubId(clubDto.getId());
-            club.setEvents(events);
-        } else {
-            club.setEvents(null);
-        }
         return clubRepository.save(club).getDto();
     }
 
     @Override
-    public ClubDto updateClub(Long clubId, ClubDto clubDto) {
+    public ClubDto updateClub(Long clubId, ClubUpdateDto clubUpdateDto) {
 
         Club existingClub = clubRepository.findById(clubId).get();
 
         existingClub.setId(clubId);
-        existingClub.setName(clubDto.getName());
-        existingClub.setDescription(clubDto.getDescription());
-        existingClub.setCreatedDate(clubDto.getCreatedDate());
-        existingClub.setUpdatedDate(clubDto.getUpdatedDate());
-        existingClub.setPhotoUrl(clubDto.getPhotoUrl());
-
-        if (clubDto.getEvents() != null) {
-            List<Event> events = (List<Event>) eventRepository.findEventByClubId(clubDto.getId());
-            existingClub.setEvents(events);
-        } else {
-            existingClub.setEvents(null);
-        }
+        existingClub.setName(clubUpdateDto.getName());
+        existingClub.setDescription(clubUpdateDto.getDescription());
+        existingClub.setUpdatedDate(LocalDateTime.now());
+        existingClub.setPhotoUrl(clubUpdateDto.getPhotoUrl());
 
         return clubRepository.save(existingClub).getDto();
     }

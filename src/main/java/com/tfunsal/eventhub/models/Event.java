@@ -28,7 +28,7 @@ public class Event {
     private LocalDateTime endTime;
     private EventCategory eventCategory;
     private EventType eventType;
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_id")
     @OnDelete(action = OnDeleteAction.CASCADE)
     private Club club;

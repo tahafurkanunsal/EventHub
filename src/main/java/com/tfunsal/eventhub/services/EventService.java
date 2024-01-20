@@ -1,6 +1,7 @@
 package com.tfunsal.eventhub.services;
 
 import com.tfunsal.eventhub.dtos.EventDto;
+import com.tfunsal.eventhub.dtos.EventUpdateDto;
 import com.tfunsal.eventhub.enums.EventCategory;
 import com.tfunsal.eventhub.enums.EventType;
 
@@ -24,7 +25,7 @@ public interface EventService {
 
     EventDto createEvent(EventDto eventDto);
 
-    EventDto updateEvent(Long eventId, EventDto eventDto);
+    EventDto updateEvent(Long eventId, EventUpdateDto eventUpdateDto);
 
     boolean deleteEvent(Long eventId);
 
