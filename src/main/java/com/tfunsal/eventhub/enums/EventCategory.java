@@ -8,6 +8,4 @@ public enum EventCategory {
     Social_Events,
     Technology_and_Innovation,
     Health_and_Fitness
-
-
-    }
+}

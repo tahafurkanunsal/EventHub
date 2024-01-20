@@ -30,12 +30,12 @@ public class Club {
     private LocalDateTime createdDate;
     @UpdateTimestamp
     private LocalDateTime updatedDate;
-    @OneToMany(mappedBy = "club" , cascade = CascadeType.ALL)
+    @OneToMany(mappedBy = "club", cascade = CascadeType.ALL)
     @JoinColumn(name = "event_id")
     private List<Event> events = new ArrayList<>();
 
 
-    public ClubDto getDto(){
+    public ClubDto getDto() {
         ClubDto clubDto = new ClubDto();
 
         clubDto.setId(id);
@@ -46,7 +46,7 @@ public class Club {
         clubDto.setUpdatedDate(updatedDate);
 
         List<EventDto> eventDtos = new ArrayList<>();
-        for (Event event : events){
+        for (Event event : events) {
             EventDto eventDto = new EventDto();
             eventDto.setId(event.getId());
             eventDto.setName(event.getName());

@@ -24,7 +24,7 @@ public interface EventService {
 
     EventDto createEvent(EventDto eventDto);
 
-    EventDto updateEvent(Long eventId , EventDto eventDto);
+    EventDto updateEvent(Long eventId, EventDto eventDto);
 
     boolean deleteEvent(Long eventId);
 

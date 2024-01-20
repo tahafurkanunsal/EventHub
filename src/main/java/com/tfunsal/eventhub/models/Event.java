@@ -34,7 +34,7 @@ public class Event {
     private Club club;
 
 
-    public EventDto getDto(){
+    public EventDto getDto() {
         EventDto eventDto = new EventDto();
 
         eventDto.setId(id);

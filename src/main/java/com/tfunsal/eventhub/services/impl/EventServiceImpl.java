@@ -97,7 +97,7 @@ public class EventServiceImpl implements EventService {
         existingEvent.setEndTime(eventDto.getEndTime());
 
         Optional<Club> club = clubRepository.findById(eventDto.getClubId());
-        if (club.isPresent()){
+        if (club.isPresent()) {
             existingEvent.setClub(club.get());
         }
         return eventRepository.save(existingEvent).getDto();
@@ -106,7 +106,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public boolean deleteEvent(Long eventId) {
         Optional<Event> event = eventRepository.findById(eventId);
-        if (event.isPresent()){
+        if (event.isPresent()) {
             eventRepository.deleteById(eventId);
             return true;
         }

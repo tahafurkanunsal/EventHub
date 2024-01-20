@@ -45,7 +45,7 @@ public class ClubServiceImpl implements ClubService {
 
         Optional<Club> club = clubRepository.findById(id);
 
-        if (club.isPresent()){
+        if (club.isPresent()) {
             List<Event> events = (List<Event>) eventRepository.findEventByClubId(id);
             club.get().setEvents(events);
         }
@@ -62,10 +62,10 @@ public class ClubServiceImpl implements ClubService {
         club.setUpdatedDate(clubDto.getUpdatedDate());
         club.setPhotoUrl(clubDto.getPhotoUrl());
 
-        if (clubDto.getEvents() != null){
+        if (clubDto.getEvents() != null) {
             List<Event> events = (List<Event>) eventRepository.findEventByClubId(clubDto.getId());
             club.setEvents(events);
-        }else {
+        } else {
             club.setEvents(null);
         }
         return clubRepository.save(club).getDto();
@@ -76,19 +76,19 @@ public class ClubServiceImpl implements ClubService {
 
         Club existingClub = clubRepository.findById(clubId).get();
 
-            existingClub.setId(clubId);
-            existingClub.setName(clubDto.getName());
-            existingClub.setDescription(clubDto.getDescription());
-            existingClub.setCreatedDate(clubDto.getCreatedDate());
-            existingClub.setUpdatedDate(clubDto.getUpdatedDate());
-            existingClub.setPhotoUrl(clubDto.getPhotoUrl());
+        existingClub.setId(clubId);
+        existingClub.setName(clubDto.getName());
+        existingClub.setDescription(clubDto.getDescription());
+        existingClub.setCreatedDate(clubDto.getCreatedDate());
+        existingClub.setUpdatedDate(clubDto.getUpdatedDate());
+        existingClub.setPhotoUrl(clubDto.getPhotoUrl());
 
-            if (clubDto.getEvents() != null){
-                List<Event> events = (List<Event>) eventRepository.findEventByClubId(clubDto.getId());
-                existingClub.setEvents(events);
-            }else {
-                existingClub.setEvents(null);
-            }
+        if (clubDto.getEvents() != null) {
+            List<Event> events = (List<Event>) eventRepository.findEventByClubId(clubDto.getId());
+            existingClub.setEvents(events);
+        } else {
+            existingClub.setEvents(null);
+        }
 
         return clubRepository.save(existingClub).getDto();
     }
@@ -97,7 +97,7 @@ public class ClubServiceImpl implements ClubService {
     public boolean deleteClub(Long id) {
 
         Optional<Club> club = clubRepository.findById(id);
-        if (club.isPresent()){
+        if (club.isPresent()) {
             clubRepository.deleteById(id);
             return true;
         }

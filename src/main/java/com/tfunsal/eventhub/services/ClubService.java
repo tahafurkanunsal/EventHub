@@ -16,7 +16,7 @@ public interface ClubService {
 
     ClubDto createClub(ClubDto clubDto);
 
-    ClubDto updateClub(Long clubId , ClubDto clubDto);
+    ClubDto updateClub(Long clubId, ClubDto clubDto);
 
     boolean deleteClub(Long id);
 }

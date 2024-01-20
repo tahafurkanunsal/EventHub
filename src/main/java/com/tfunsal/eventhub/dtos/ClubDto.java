@@ -1,6 +1,5 @@
 package com.tfunsal.eventhub.dtos;
 
-import com.tfunsal.eventhub.models.Event;
 import lombok.Data;
 
 import java.time.LocalDateTime;
