@@ -12,4 +12,9 @@ public class ClubUpdateDto {
     private String description;
     private String photoUrl;
     private LocalDateTime updatedDate;
+
+    private String clubAdminName;
+    private String clubAdminLastName;
+    private String clubAdminEmail;
+    private String clubAdminPassword;
 }

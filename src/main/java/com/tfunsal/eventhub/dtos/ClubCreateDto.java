@@ -14,4 +14,9 @@ public class ClubCreateDto {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
 
+    private String clubAdminName;
+    private String clubAdminLastName;
+    private String clubAdminEmail;
+    private String clubAdminPassword;
+
 }

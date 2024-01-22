@@ -35,7 +35,6 @@ public class ClubController {
         ClubDto clubDto = clubService.getClubByName(name);
         return ResponseEntity.ok(clubDto);
     }
-
     @PostMapping("/clubs")
     public ResponseEntity<ClubDto> createClub(@RequestBody ClubCreateDto clubCreateDto) {
         ClubDto newClub = clubService.createClub(clubCreateDto);

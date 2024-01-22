@@ -33,7 +33,8 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
-                        .requestMatchers("/api").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers("/api/**").hasAnyAuthority(Role.ADMIN.name())
+                        .requestMatchers("/api/**").hasAnyAuthority(Role.CLUB_ADMIN.name())
                         .anyRequest().authenticated())
                 .sessionManagement(manager -> manager.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(authenticationProvider()).addFilterBefore(

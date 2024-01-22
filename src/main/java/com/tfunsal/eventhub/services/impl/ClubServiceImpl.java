@@ -4,12 +4,16 @@ import com.tfunsal.eventhub.dtos.ClubCreateDto;
 import com.tfunsal.eventhub.dtos.ClubDto;
 import com.tfunsal.eventhub.dtos.ClubUpdateDto;
 import com.tfunsal.eventhub.models.Club;
-import com.tfunsal.eventhub.models.Event;
+import com.tfunsal.eventhub.models.Role;
+import com.tfunsal.eventhub.models.User;
 import com.tfunsal.eventhub.repository.ClubRepository;
 import com.tfunsal.eventhub.repository.EventRepository;
+import com.tfunsal.eventhub.repository.UserRepository;
 import com.tfunsal.eventhub.services.ClubService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +27,8 @@ public class ClubServiceImpl implements ClubService {
     private final ClubRepository clubRepository;
 
     private final EventRepository eventRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public List<ClubDto> getAllClubs() {
@@ -46,7 +52,18 @@ public class ClubServiceImpl implements ClubService {
 
 
     @Override
+    @Transactional
     public ClubDto createClub(ClubCreateDto clubCreateDto) {
+
+        User clubAdmin = new User();
+        clubAdmin.setName(clubCreateDto.getClubAdminName());
+        clubAdmin.setLastName(clubCreateDto.getClubAdminLastName());
+        clubAdmin.setRole(Role.CLUB_ADMIN);
+        clubAdmin.setEmail(clubCreateDto.getClubAdminEmail());
+        clubAdmin.setPassword(new BCryptPasswordEncoder().encode(clubCreateDto.getClubAdminPassword()));
+
+        userRepository.save(clubAdmin);
+
         Club club = new Club();
         club.setId(clubCreateDto.getId());
         club.setName(clubCreateDto.getName());
@@ -54,6 +71,7 @@ public class ClubServiceImpl implements ClubService {
         club.setCreatedDate(LocalDateTime.now());
         club.setUpdatedDate(LocalDateTime.now());
         club.setPhotoUrl(clubCreateDto.getPhotoUrl());
+        club.setClubAdmin(clubAdmin);
 
         return clubRepository.save(club).getDto();
     }

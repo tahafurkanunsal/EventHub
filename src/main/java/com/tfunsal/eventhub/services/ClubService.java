@@ -3,6 +3,7 @@ package com.tfunsal.eventhub.services;
 import com.tfunsal.eventhub.dtos.ClubCreateDto;
 import com.tfunsal.eventhub.dtos.ClubDto;
 import com.tfunsal.eventhub.dtos.ClubUpdateDto;
+import com.tfunsal.eventhub.models.User;
 
 import java.util.List;
 

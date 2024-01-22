@@ -16,4 +16,5 @@ public class ClubDto {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private List<ClubEventInfoDto> events = new ArrayList<>();
+    private Long ClubAdminId;
 }

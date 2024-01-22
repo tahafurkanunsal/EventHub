@@ -32,6 +32,9 @@ public class Club {
     private LocalDateTime updatedDate;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "club")
     private List<Event> events = new ArrayList<>();
+    @OneToOne
+    @JoinColumn(name = "club_admin_id")
+    private User clubAdmin;
 
 
     public ClubDto getDto() {
@@ -43,6 +46,7 @@ public class Club {
         clubDto.setPhotoUrl(photoUrl);
         clubDto.setCreatedDate(createdDate);
         clubDto.setUpdatedDate(updatedDate);
+        clubDto.setClubAdminId(clubAdmin.getId());
 
         List<ClubEventInfoDto> clubEventInfoDtos = new ArrayList<>();
         for (Event event : events) {
