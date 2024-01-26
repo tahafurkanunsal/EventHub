@@ -2,9 +2,12 @@ package com.tfunsal.eventhub.dtos;
 
 import com.tfunsal.eventhub.enums.EventCategory;
 import com.tfunsal.eventhub.enums.EventType;
+import com.tfunsal.eventhub.models.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Data
 public class ClubEventInfoDto {
@@ -15,4 +18,7 @@ public class ClubEventInfoDto {
     private LocalDateTime endTime;
     private EventCategory eventCategory;
     private EventType eventType;
+    private Long participantLimit;
+    private List<UserDto> users = new ArrayList<>();
+
 }

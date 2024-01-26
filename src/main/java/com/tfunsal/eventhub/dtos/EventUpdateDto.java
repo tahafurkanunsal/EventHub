@@ -15,4 +15,6 @@ public class EventUpdateDto {
     private LocalDateTime endTime;
     private EventCategory eventCategory;
     private EventType eventType;
+    private Long participantLimit;
+
 }

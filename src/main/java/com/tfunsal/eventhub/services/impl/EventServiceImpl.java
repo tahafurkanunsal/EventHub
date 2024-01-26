@@ -5,10 +5,15 @@ import com.tfunsal.eventhub.dtos.EventUpdateDto;
 import com.tfunsal.eventhub.enums.EventCategory;
 import com.tfunsal.eventhub.enums.EventType;
 import com.tfunsal.eventhub.exception.ClubNotFoundException;
+import com.tfunsal.eventhub.exception.EventNotFoundException;
+import com.tfunsal.eventhub.exception.UserAlreadyParticipatingException;
+import com.tfunsal.eventhub.exception.UserNotFoundException;
 import com.tfunsal.eventhub.models.Club;
 import com.tfunsal.eventhub.models.Event;
+import com.tfunsal.eventhub.models.User;
 import com.tfunsal.eventhub.repository.ClubRepository;
 import com.tfunsal.eventhub.repository.EventRepository;
+import com.tfunsal.eventhub.repository.UserRepository;
 import com.tfunsal.eventhub.services.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -24,6 +29,8 @@ public class EventServiceImpl implements EventService {
     private final EventRepository eventRepository;
 
     private final ClubRepository clubRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     public List<EventDto> getAllEvent() {
@@ -78,6 +85,7 @@ public class EventServiceImpl implements EventService {
         event.setEndTime(eventDto.getEndTime());
         event.setEventCategory(eventDto.getEventCategory());
         event.setEventType(eventDto.getEventType());
+        event.setParticipantLimit(eventDto.getParticipantLimit());
 
         Optional<Club> clubOptional = clubRepository.findById(eventDto.getClubId());
 
@@ -95,6 +103,7 @@ public class EventServiceImpl implements EventService {
             newEventDto.setEndTime(savedEvent.getEndTime());
             newEventDto.setEventCategory(savedEvent.getEventCategory());
             newEventDto.setEventType(savedEvent.getEventType());
+            newEventDto.setParticipantLimit(savedEvent.getParticipantLimit());
             newEventDto.setClubId(savedEvent.getClub().getId());
             newEventDto.setClubName(savedEvent.getClub().getName());
 
@@ -116,6 +125,7 @@ public class EventServiceImpl implements EventService {
         existingEvent.setEventType(eventUpdateDto.getEventType());
         existingEvent.setStartTime(eventUpdateDto.getStartTime());
         existingEvent.setEndTime(eventUpdateDto.getEndTime());
+        existingEvent.setParticipantLimit(eventUpdateDto.getParticipantLimit());
 
         return eventRepository.save(existingEvent).getDto();
     }
@@ -128,5 +138,63 @@ public class EventServiceImpl implements EventService {
             return true;
         }
         return false;
+    }
+
+    @Override
+    public EventDto joinTheEvent(Long eventId, Long userId) {
+
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+
+        if (optionalEvent.isPresent()) {
+            User existingUser = userRepository.findById(userId).orElseThrow();
+
+            Event existingEvent = optionalEvent.get();
+
+            if (!existingEvent.getUsers().contains(existingUser)) {
+                existingEvent.getUsers().add(existingUser);
+                existingEvent.setParticipantLimit(existingEvent.getParticipantLimit() - 1);
+
+                eventRepository.save(existingEvent);
+
+                return existingEvent.getDto();
+            } else {
+                throw new UserAlreadyParticipatingException("User is already participating in the event with id: " + userId);
+            }
+        } else {
+            throw new EventNotFoundException("Event not found with id :" + eventId);
+        }
+    }
+
+    @Override
+    public EventDto leaveTheEvent(Long eventId, Long userId) {
+        Optional<Event> optionalEvent = eventRepository.findById(eventId);
+
+        if (optionalEvent.isPresent()) {
+            Event existingEvent = optionalEvent.get();
+
+            Optional<User> optionalUser = existingEvent.getUsers()
+                    .stream()
+                    .filter(user -> user.getId().equals(userId))
+                    .findFirst();
+
+            if (optionalUser.isPresent()) {
+                User userToRemove = optionalUser.get();
+
+                // Remove the user from the event's user list
+                existingEvent.getUsers().remove(userToRemove);
+
+                // Update the participant limit
+                existingEvent.setParticipantLimit(existingEvent.getParticipantLimit() + 1);
+
+                // Save the updated event
+                eventRepository.save(existingEvent);
+
+                return existingEvent.getDto();
+            } else {
+                throw new UserNotFoundException("User not found in the event with id: " + userId);
+            }
+        } else {
+            throw new EventNotFoundException("Event not found with id: " + eventId);
+        }
     }
 }

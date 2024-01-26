@@ -29,4 +29,8 @@ public interface EventService {
 
     boolean deleteEvent(Long eventId);
 
+    EventDto joinTheEvent(Long eventId , Long userId);
+
+    EventDto leaveTheEvent(Long eventId , Long userId);
+
 }

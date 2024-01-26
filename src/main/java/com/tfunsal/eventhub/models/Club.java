@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.mapping.ToOne;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -32,7 +33,7 @@ public class Club {
     private LocalDateTime updatedDate;
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "club")
     private List<Event> events = new ArrayList<>();
-    @OneToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_admin_id")
     private User clubAdmin;
 
@@ -57,6 +58,7 @@ public class Club {
             clubEventInfoDto.setEndTime(event.getEndTime());
             clubEventInfoDto.setEventCategory(event.getEventCategory());
             clubEventInfoDto.setEventType(event.getEventType());
+            clubEventInfoDto.setParticipantLimit(event.getParticipantLimit());
             clubEventInfoDtos.add(clubEventInfoDto);
         }
         clubDto.setEvents(clubEventInfoDtos);

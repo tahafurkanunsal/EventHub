@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(request -> request.requestMatchers("/api/auth/**")
                         .permitAll()
                         .requestMatchers(HttpMethod.GET,"/api/**").permitAll()
+                        .requestMatchers(HttpMethod.PATCH , "/api/events/**").permitAll()
                         .requestMatchers("/api/**").hasAnyAuthority(Role.ADMIN.name())
                         .requestMatchers("/api/**").hasAnyAuthority(Role.CLUB_ADMIN.name())
                         .anyRequest().authenticated())
