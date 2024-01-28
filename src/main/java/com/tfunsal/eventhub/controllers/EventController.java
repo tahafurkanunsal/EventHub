@@ -5,8 +5,6 @@ import com.tfunsal.eventhub.dtos.EventDto;
 import com.tfunsal.eventhub.dtos.EventUpdateDto;
 import com.tfunsal.eventhub.enums.EventCategory;
 import com.tfunsal.eventhub.enums.EventType;
-import com.tfunsal.eventhub.models.Club;
-import com.tfunsal.eventhub.models.Event;
 import com.tfunsal.eventhub.models.User;
 import com.tfunsal.eventhub.services.ClubService;
 import com.tfunsal.eventhub.services.EventService;
@@ -63,8 +61,8 @@ public class EventController {
         return ResponseEntity.ok(eventDtoList);
     }
 
-    @GetMapping(value = "/events/{clubId}")
-    public ResponseEntity<List<EventDto>> getEventsByClub(@PathVariable("clubId") Long clubId) {
+    @GetMapping(value = "/events" ,params = {"clubId"})
+    public ResponseEntity<List<EventDto>> getEventsByClub(@RequestParam Long clubId) {
         List<EventDto> eventDtoList = eventService.getEventsByClub(clubId);
         return ResponseEntity.ok(eventDtoList);
     }

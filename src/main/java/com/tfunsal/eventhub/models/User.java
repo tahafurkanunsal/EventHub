@@ -1,5 +1,6 @@
 package com.tfunsal.eventhub.models;
 
+import com.tfunsal.eventhub.dtos.UserDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -55,5 +56,14 @@ public class User implements UserDetails {
     @Override
     public boolean isEnabled() {
         return true;
+    }
+
+    public UserDto getDto(){
+        UserDto userDto = new UserDto();
+        userDto.setId(id);
+        userDto.setName(name);
+        userDto.setLastName(lastName);
+        userDto.setEmail(email);
+        return userDto;
     }
 }

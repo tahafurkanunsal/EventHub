@@ -2,7 +2,6 @@ package com.tfunsal.eventhub.dtos;
 
 import com.tfunsal.eventhub.enums.EventCategory;
 import com.tfunsal.eventhub.enums.EventType;
-import com.tfunsal.eventhub.models.User;
 import lombok.Data;
 
 import java.time.LocalDateTime;

@@ -1,7 +1,5 @@
 package com.tfunsal.eventhub.enums;
 
-import java.awt.*;
-import java.awt.print.Book;
 
 public enum EventType {
 
