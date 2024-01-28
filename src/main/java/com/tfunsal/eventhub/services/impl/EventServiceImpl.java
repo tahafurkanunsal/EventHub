@@ -74,6 +74,13 @@ public class EventServiceImpl implements EventService {
         return events.stream().map(Event::getDto).collect(Collectors.toList());
     }
 
+
+    @Override
+    public EventDto getEventByEventIdAndClubId(Long eventId, Long clubId) {
+        Event event = eventRepository.findEventByIdAndClubId(eventId , clubId);
+        return event.getDto();
+    }
+
     @Override
     public EventDto createEvent(EventDto eventDto) {
         Event event = new Event();
@@ -180,13 +187,9 @@ public class EventServiceImpl implements EventService {
             if (optionalUser.isPresent()) {
                 User userToRemove = optionalUser.get();
 
-                // Remove the user from the event's user list
                 existingEvent.getUsers().remove(userToRemove);
-
-                // Update the participant limit
                 existingEvent.setParticipantLimit(existingEvent.getParticipantLimit() + 1);
 
-                // Save the updated event
                 eventRepository.save(existingEvent);
 
                 return existingEvent.getDto();

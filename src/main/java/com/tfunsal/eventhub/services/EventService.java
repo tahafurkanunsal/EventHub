@@ -23,14 +23,16 @@ public interface EventService {
 
     List<EventDto> getEventsByClub(Long clubId);
 
+    EventDto getEventByEventIdAndClubId(Long eventId , Long clubId);
+
     EventDto createEvent(EventDto eventDto);
 
     EventDto updateEvent(Long eventId, EventUpdateDto eventUpdateDto);
 
     boolean deleteEvent(Long eventId);
 
-    EventDto joinTheEvent(Long eventId , Long userId);
+    EventDto joinTheEvent(Long eventId, Long userId);
 
-    EventDto leaveTheEvent(Long eventId , Long userId);
+    EventDto leaveTheEvent(Long eventId, Long userId);
 
 }

@@ -50,6 +50,18 @@ public class ClubServiceImpl implements ClubService {
         return club.getDto();
     }
 
+    @Override
+    public List<ClubDto> getClubsByClubAdminId(Long clubAdminId) {
+        List<Club> clubs = clubRepository.findClubsByClubAdminId(clubAdminId);
+        return clubs.stream().map(Club::getDto).collect(Collectors.toList());
+    }
+
+    @Override
+    public ClubDto getClubByClubIdAndClubAdminId(Long clubId, Long clubAdminId) {
+        Club club = clubRepository.findClubByIdAndClubAdminId(clubId, clubAdminId);
+        return club.getDto();
+    }
+
 
     @Override
     @Transactional

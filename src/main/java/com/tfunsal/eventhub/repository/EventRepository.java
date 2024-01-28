@@ -11,7 +11,7 @@ import java.util.List;
 @Repository
 public interface EventRepository extends JpaRepository<Event, Long> {
 
-    Event findEventByClubId(Long clubId);
+    Event findEventByIdAndClubId(Long eventId , Long clubId);
 
     List<Event> findEventsByName(String eventName);
 

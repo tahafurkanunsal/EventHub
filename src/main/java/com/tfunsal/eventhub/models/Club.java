@@ -7,6 +7,8 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.mapping.ToOne;
 
@@ -35,6 +37,7 @@ public class Club {
     private List<Event> events = new ArrayList<>();
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "club_admin_id")
+    @OnDelete(action = OnDeleteAction.CASCADE)
     private User clubAdmin;
 
 

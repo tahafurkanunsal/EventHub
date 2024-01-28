@@ -1,10 +1,14 @@
 package com.tfunsal.eventhub.controllers;
 
+import com.tfunsal.eventhub.dtos.ClubDto;
 import com.tfunsal.eventhub.dtos.EventDto;
 import com.tfunsal.eventhub.dtos.EventUpdateDto;
 import com.tfunsal.eventhub.enums.EventCategory;
 import com.tfunsal.eventhub.enums.EventType;
+import com.tfunsal.eventhub.models.Club;
+import com.tfunsal.eventhub.models.Event;
 import com.tfunsal.eventhub.models.User;
+import com.tfunsal.eventhub.services.ClubService;
 import com.tfunsal.eventhub.services.EventService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -20,6 +24,8 @@ import java.util.List;
 public class EventController {
 
     private final EventService eventService;
+
+    private final ClubService clubService;
 
     @GetMapping("/events")
     public ResponseEntity<List<EventDto>> getAllEvent() {
@@ -63,31 +69,71 @@ public class EventController {
         return ResponseEntity.ok(eventDtoList);
     }
 
+    @GetMapping(value = "/admin/events")
+    public ResponseEntity<List<EventDto>> getEventsByClub(Authentication authentication) {
+        User user = (User) authentication.getPrincipal();
+        Long userId = user.getId();
+
+        ClubDto clubDto = clubService.getClubsByClubAdminId(userId).get(0);
+
+        if (clubDto != null) {
+            List<EventDto> eventDtoList = eventService.getEventsByClub(clubDto.getId());
+            return ResponseEntity.ok(eventDtoList);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
+    @GetMapping(value = "/admin/events", params = {"eventId"})
+    public ResponseEntity<EventDto> getEventByEventIdAndClubId(@RequestParam Long eventId, Authentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+        Long userId = user.getId();
+
+        ClubDto clubDto = clubService.getClubsByClubAdminId(userId).get(0);
+        if (clubDto != null) {
+            EventDto eventDto = eventService.getEventByEventIdAndClubId(eventId, clubDto.getId());
+            return ResponseEntity.ok(eventDto);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
+    }
+
     @PostMapping("/events")
     public ResponseEntity<EventDto> createEvent(@RequestBody EventDto eventDto) {
         EventDto newEvent = eventService.createEvent(eventDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(newEvent);
     }
 
-    @PutMapping("/events/{id}")
-    public ResponseEntity<EventDto> updateEvent(@PathVariable("id") Long id, EventUpdateDto eventUpdateDto) {
-        EventDto updateEvent = eventService.updateEvent(id, eventUpdateDto);
-        return ResponseEntity.ok(updateEvent);
+    @PutMapping("/events/{eventId}")
+    public ResponseEntity<EventDto> updateEvent(@PathVariable Long eventId, @RequestBody EventUpdateDto eventUpdateDto, Authentication authentication) {
+
+        User user = (User) authentication.getPrincipal();
+        Long userId = user.getId();
+
+        ClubDto clubDto = clubService.getClubsByClubAdminId(userId).get(0);
+
+        EventDto eventDto = eventService.getEventByEventIdAndClubId(eventId, clubDto.getId());
+        if (eventDto != null) {
+            EventDto updateEvent = eventService.updateEvent(eventId, eventUpdateDto);
+            return ResponseEntity.ok(updateEvent);
+        }
+        return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
     }
+
     @PatchMapping("/events/{eventId}/join")
-    public ResponseEntity<EventDto> joinTheEvents(@PathVariable Long eventId , Authentication authentication){
+    public ResponseEntity<EventDto> joinTheEvents(@PathVariable Long eventId, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Long userId = user.getId();
 
-        EventDto updateEvent = eventService.joinTheEvent(eventId , userId);
+        EventDto updateEvent = eventService.joinTheEvent(eventId, userId);
         return ResponseEntity.ok(updateEvent);
     }
+
     @PatchMapping("/events/{eventId}/leave")
-    public ResponseEntity<EventDto> leaveTheEvents(@PathVariable Long eventId , Authentication authentication){
+    public ResponseEntity<EventDto> leaveTheEvents(@PathVariable Long eventId, Authentication authentication) {
         User user = (User) authentication.getPrincipal();
         Long userId = user.getId();
 
-        EventDto updateEvent = eventService.leaveTheEvent(eventId , userId);
+        EventDto updateEvent = eventService.leaveTheEvent(eventId, userId);
         return ResponseEntity.ok(updateEvent);
     }
 
@@ -99,6 +145,4 @@ public class EventController {
         }
         return ResponseEntity.notFound().build();
     }
-
-
 }
